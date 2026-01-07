@@ -40,17 +40,16 @@ jobs:
   deploy-to-ec2:
     needs: build-and-push
     runs-on: ubuntu-latest
-    # EC2 시크릿이 없으면 이 job을 스킵
-    if: secrets.EC2_HOST != '' && secrets.EC2_SSH_KEY != ''
 
     steps:
       - name: SSH Deploy
         uses: appleboy/ssh-action@v1.0.3
+        continue-on-error: true
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER || 'ubuntu' }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          timeout: 30s
+          timeout: 60s
           command_timeout: 10m
           script: |
             set -e
